@@ -225,8 +225,6 @@ if uploaded_zip:
                 )
 
     # === VISUALIZATION DASHBOARD ===
-    st.markdown("---")
-    st.markdown("## 📊 Analytics Dashboard")
     with st.spinner("Loading analytics..."):
         show_visualization_dashboard()
 

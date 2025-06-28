@@ -10,7 +10,6 @@ import matplotlib.font_manager as fm
 import numpy as np
 import os
 
-
 def find_persian_font():
     """
     Try to find a Persian-compatible font on the system.
@@ -47,7 +46,6 @@ def find_persian_font():
     # Fallback to None (system default)
     return None
 
-
 def extract_confusion_matrix_data():
     """
     Extract predicted vs actual digit pairs for confusion matrix.
@@ -65,7 +63,6 @@ def extract_confusion_matrix_data():
     
     return predicted_actual_pairs
 
-
 def create_confusion_matrix():
     """
     Create a confusion matrix for digit predictions.
@@ -82,7 +79,6 @@ def create_confusion_matrix():
         confusion_matrix[actual][predicted] += 1
     
     return confusion_matrix
-
 
 def show_visualization_dashboard():
     st.header("📊 Visualization Dashboard")

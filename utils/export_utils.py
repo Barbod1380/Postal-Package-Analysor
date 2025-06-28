@@ -1,7 +1,8 @@
 import pandas as pd
+from typing import Dict, Any
+from collections import defaultdict
 import streamlit as st
 
-@st.cache_data
 def generate_annotation_csv() -> pd.DataFrame:
     """
     Combines group labels, digit labels, word labels, and missed words

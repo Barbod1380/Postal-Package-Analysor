@@ -11,7 +11,7 @@ ERROR_CATEGORIES = [
 ]
 
 def classify_group(group_key: str):
-    """
+    """ظ
     Renders a classification multiselect for the given image group.
     Allows multiple labels per group. Saves the selected labels in Streamlit session state.
     """
