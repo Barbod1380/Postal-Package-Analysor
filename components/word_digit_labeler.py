@@ -149,17 +149,31 @@ def label_words(group_key: str, words: list[str]):
     currently_incorrect = [word for word, label in word_labels.items() if label == "False"]
     
     # Create a form for batch updates
+
+    # Create a single combined form for both word labeling and missed words
     with st.form(f"word_form_{group_key}"):
-        # Multiselect for incorrect words (won't trigger immediate updates)
+        # Multiselect for incorrect words
         incorrect_words = st.multiselect(
             "⚠️ Select words that are INCORRECTLY detected:",
             options=words,
             default=currently_incorrect,
-            help="Select all incorrect words, then click 'Apply Changes' below"
+            help="Select all incorrect words from the detected list"
         )
         
-        # Submit button for batch update
-        submitted = st.form_submit_button("✅ Apply Word Labels", type="primary")
+        st.markdown("#### ➕ Add Missed Words")
+        # Get current missed words to show in text area
+        current_missed = st.session_state.get("missed_words", {}).get(group_key, [])
+        current_missed_text = ", ".join(current_missed) if current_missed else ""
+        
+        missed_input = st.text_area(
+            "Enter missed words (کلمات از دست رفته را وارد کنید):",
+            value=current_missed_text,
+            placeholder="word1, word2, word3",
+            help="Separate multiple words with commas"
+        )
+        
+        # Single submit button for both operations
+        submitted = st.form_submit_button("✅ Apply Word Changes", type="primary")
         
         if submitted:
             # Update word labels based on selection
@@ -171,7 +185,16 @@ def label_words(group_key: str, words: list[str]):
                     new_word_labels[word] = "True"
             
             st.session_state["word_labels"][group_key] = new_word_labels
-            st.success(f"Updated labels for {len(words)} words!")
+            
+            # Handle missed words
+            if missed_input and missed_input.strip():
+                missed_list = [w.strip() for w in missed_input.split(",") if w.strip()]
+                st.session_state["missed_words"][group_key] = missed_list
+                st.success(f"Updated labels for {len(words)} words and saved {len(missed_list)} missed words!")
+            else:
+                # Clear missed words if input is empty
+                st.session_state["missed_words"][group_key] = []
+                st.success(f"Updated labels for {len(words)} words!")
     
     # Show current status (outside form to avoid conflicts)
     if word_labels:  # Only show if labels exist
@@ -179,22 +202,6 @@ def label_words(group_key: str, words: list[str]):
         incorrect_count = len([w for w, label in word_labels.items() if label == "False"])
         st.info(f"✅ {correct_count} correct, ❌ {incorrect_count} incorrect")
 
-    # Add missed words section
-    st.markdown("#### ➕ Add Missed Words")
-    with st.form(f"missed_words_form_{group_key}"):
-        missed_input = st.text_area(
-            "Enter missed words (کلمات از دست رفته را وارد کنید):",
-            placeholder="word1, word2, word3",
-            help="Separate multiple words with commas"
-        )
-        
-        missed_submitted = st.form_submit_button("💾 Save Missed Words")
-        
-        if missed_submitted and missed_input:
-            missed_list = [w.strip() for w in missed_input.split(",") if w.strip()]
-            st.session_state["missed_words"][group_key] = missed_list
-            st.success(f"Saved {len(missed_list)} missed words!")
-    
     # Display current missed words
     if group_key in st.session_state["missed_words"]:
         missed_list = st.session_state["missed_words"][group_key]

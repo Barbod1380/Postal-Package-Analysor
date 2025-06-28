@@ -145,7 +145,6 @@ if uploaded_zip:
         display_image_group(selected_key, groups[selected_key])
 
     # === IMPROVED LAYOUT ORGANIZATION ===
-    st.markdown("---")
     classify_group(selected_key)
 
     st.markdown("---")
